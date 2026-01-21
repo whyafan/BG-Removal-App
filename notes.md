@@ -1,0 +1,7 @@
+- We created a page in /pages directory for every Figma page in the design.
+- We will now set up React Router in main.jsx.
+- Currently creating the routes and testing them.
+- Migrating from Pages -> App Router once project is done will be the priority.
+- Convert this into modern HTML and other coding-related practices including JS -> TS
+- Since we want the NavBar on every page, we mount the component to App.JSX, so that it applies to every page.
+- I also want to note that we're not writing code in App.JSX for even the NavBar, which is the common in every page. We're leveraging the concept of components and relying on them for the same. Code remains more organized and readable that way.

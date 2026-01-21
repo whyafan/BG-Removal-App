@@ -7,9 +7,13 @@ import Home from './pages/Home'
 import Result from './pages/Result'
 import BuyCredit from './pages/BuyCredit'
 
+import NavBar from './components/NavBar'
+
 const App = () => {
   return (
-      <div>
+      <div className='min-h-screen bg-slate-50'>
+          <NavBar />
+
           {/* This is the main container for all the routes. */}
           <Routes>
               {/* Setting up individual routes for the pages. */}
