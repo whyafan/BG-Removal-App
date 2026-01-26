@@ -11,8 +11,10 @@ import NavBar from './components/NavBar'
 
 const App = () => {
   return (
-      <div className='min-h-screen bg-slate-50'>
+    <div className='min-h-screen bg-slate-50'>
+      <div className='mx-auto w-full max-w-screen-xl px-4 sm:px-6 lg:px-8'>
           <NavBar />
+      </div>
 
           {/* This is the main container for all the routes. */}
           <Routes>
