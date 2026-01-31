@@ -10,3 +10,4 @@
 - I can also improve the UI of this website as we move forward, add more to it using AI like the PERN video said. I'll follow his approach, see what stack he uses, and build something out that way too. URL to reference: https://youtu.be/ek7hmv5PVV8?si=CM2vgaxZSKpYXDNH
 - Make the website more responsive.
 - I'll do one page with him, and then I'll build the remaining front-end pages on my own.
+- Until Friday, 24th January, 2026: 34:02. Working on responsiveness and making mobile navigation before moving forward.

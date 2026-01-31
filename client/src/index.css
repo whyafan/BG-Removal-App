@@ -1,1 +1,111 @@
 @import "tailwindcss";
+
+/* BGSlider Component Styles */
+
+.bg-slider-container {
+  position: relative;
+  width: 700px;
+  height: 400px;
+  border-radius: 24px;
+  overflow: hidden;
+  box-sizing: border-box;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+}
+
+.bg-slider-container *,
+.bg-slider-container *:before,
+.bg-slider-container *:after {
+  box-sizing: inherit;
+}
+
+.bg-slider-img {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+}
+
+/* Vertical divider line */
+.bg-slider-line {
+  position: absolute;
+  top: 0;
+  width: 2px;
+  height: 100%;
+  background-color: white;
+  z-index: 9;
+  pointer-events: none;
+  transform: translateX(-1px);
+}
+
+.bg-slider-input {
+  position: absolute;
+  -webkit-appearance: none;
+  appearance: none;
+  width: 100%;
+  height: 100%;
+  background: transparent;
+  outline: none;
+  margin: 0;
+  z-index: 10;
+  cursor: ew-resize;
+}
+
+.bg-slider-input::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 40px;
+  height: 100%;
+  background: transparent;
+  cursor: ew-resize;
+}
+
+.bg-slider-input::-moz-range-thumb {
+  width: 40px;
+  height: 100%;
+  background: transparent;
+  cursor: ew-resize;
+  border: none;
+}
+
+.bg-slider-button {
+  pointer-events: none;
+  position: absolute;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background-color: white;
+  left: calc(50% - 20px);
+  top: calc(50% - 20px);
+  z-index: 11;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+  gap: 4px;
+}
+
+.bg-slider-button:before,
+.bg-slider-button:after {
+  content: "";
+  width: 0;
+  height: 0;
+  border-style: solid;
+}
+
+/* Left arrow */
+.bg-slider-button:before {
+  border-width: 5px 8px 5px 0;
+  border-color: transparent #5d5d5d transparent transparent;
+  margin-right: 2px;
+}
+
+/* Right arrow */
+.bg-slider-button:after {
+  border-width: 5px 0 5px 8px;
+  border-color: transparent transparent transparent #5d5d5d;
+  margin-left: 2px;
+}
