@@ -4,8 +4,8 @@
 
 .bg-slider-container {
   position: relative;
-  width: 700px;
-  height: 400px;
+  width: min(720px, 100%);
+  aspect-ratio: 7 / 4;
   border-radius: 24px;
   overflow: hidden;
   box-sizing: border-box;

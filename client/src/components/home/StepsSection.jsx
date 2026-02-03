@@ -49,13 +49,13 @@ const StepCard = ({ title, description, iconPath }) => {
   // Describe: Return the markup for a single card.
   return (
     // Describe: Card container with border, rounded corners, white bg, responsive padding, and subtle shadow.
-    <div className="flex items-start gap-6 rounded-2xl border border-[#E1E1E1] bg-white p-6 md:p-8 lg:p-6 shadow-[0_4px_15px_rgba(0,0,0,0.05)]">
-      {/* Describe: Icon wrapper sized to 44x44 with a purple gradient and rounded corners. */}
-      <div className="flex h-11 w-11 items-center justify-center rounded-2xl bg-[linear-gradient(135deg,#7C48FE,#C849F8)]">
+    <div className="flex items-start gap-4 rounded-2xl border border-[#E6E6E6] bg-white p-4 sm:p-5 shadow-[0_6px_18px_rgba(0,0,0,0.06)]">
+      {/* Describe: Icon wrapper sized to 40x40 with a purple gradient and rounded corners. */}
+      <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-[linear-gradient(135deg,#7C48FE,#C849F8)]">
         {/* Describe: Inline SVG icon (Heroicons-style) using white stroke for contrast. */}
         <svg
           // Describe: Set icon size inside the 44x44 container.
-          className="h-6 w-6"
+          className="h-5 w-5"
           // Describe: Define viewbox coordinate system for the SVG.
           viewBox="0 0 24 24"
           // Describe: Ensure the icon is stroke-only (no fill).
@@ -80,10 +80,12 @@ const StepCard = ({ title, description, iconPath }) => {
       {/* Describe: Text container so title and description stack nicely. */}
       <div>
         {/* Describe: Card title styled bold and dark for hierarchy (responsive size). */}
-        <h3 className="text-xl md:text-xl font-semibold text-black">{title}</h3>
+        <h3 className="text-[13px] sm:text-sm font-semibold text-[#1F1F1F]">
+          {title}
+        </h3>
 
         {/* Describe: Card body text with your specified gray and newline-friendly rendering. */}
-        <p className="mt-3 text-base md:text-sm leading-snug text-[#7C7C7C] whitespace-pre-line">
+        <p className="mt-2 text-[11px] sm:text-xs leading-snug text-[#7C7C7C] whitespace-pre-line">
           {description}
         </p>
       </div>
@@ -127,13 +129,13 @@ const StepsSection = () => {
   // Describe: Return the full section layout.
   return (
     // Describe: Section wrapper for the “Steps” block.
-    <section className="w-full">
+    <section className="w-full mt-14 sm:mt-20 lg:mt-24">
       {/* Describe: Use the same container standard as Header for consistent alignment. */}
       <div className="mx-auto w-full max-w-screen-xl px-4 sm:px-6 lg:px-8">
         {/* Describe: Center the heading like your Figma. */}
-        <div className="text-center">
+        <div className="text-center mb-8 sm:mb-10">
           {/* Describe: Heading with gray gradient and exact typography spec (50px, 600, 100% line-height) on desktop. */}
-          <h2 className="bg-[linear-gradient(180deg,#353535,#9B9B9B)] bg-clip-text text-transparent font-semibold text-3xl sm:text-4xl md:text-[42px]">
+          <h2 className="bg-[linear-gradient(180deg,#353535,#9B9B9B)] bg-clip-text text-transparent font-semibold text-2xl sm:text-3xl md:text-[34px] lg:text-[38px]">
             Steps to remove background
             <br />
             image in seconds
@@ -143,20 +145,23 @@ const StepsSection = () => {
         {/* Describe: Overflow wrapper prevents any parent overflow rules from clipping box shadows. */}
         <div className="overflow-visible">
           {/* Describe: Grid with exact vertical gap from heading (71px) and 48px gap between 3 cards on desktop (lg:gap-12). */}
-          <div className="mt-[71px] grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-10 lg:gap-10">
+          <div className="flex flex-wrap items-start justify-center gap-5 sm:gap-6">
             {/* Describe: Render each step card from the data array. */}
             {steps.map((step) => (
               // Describe: Render a single StepCard for each entry.
-              <StepCard
-                // Describe: Provide React key for list rendering.
+              <div
                 key={step.title}
-                // Describe: Pass the title string to the card.
-                title={step.title}
-                // Describe: Pass the description string to the card.
-                description={step.description}
-                // Describe: Pass the SVG path to the card icon.
-                iconPath={step.iconPath}
-              />
+                className="w-full max-w-[300px] sm:max-w-[320px]"
+              >
+                <StepCard
+                  // Describe: Pass the title string to the card.
+                  title={step.title}
+                  // Describe: Pass the description string to the card.
+                  description={step.description}
+                  // Describe: Pass the SVG path to the card icon.
+                  iconPath={step.iconPath}
+                />
+              </div>
             ))}
           </div>
         </div>

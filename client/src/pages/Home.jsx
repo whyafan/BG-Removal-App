@@ -6,6 +6,8 @@ import beforeImg from "../assets/image_w_bg.png";
 import afterImg from "../assets/image_wo_bg.png";
 
 import BGSlider from "../components/home/BGSlider";
+import Testimonials from "../components/home/testimonials";
+import Footer from "../components/home/footer";
 
 const Home = () => {
   return (
@@ -13,6 +15,8 @@ const Home = () => {
       <Header />
       <StepsSection />
       <BGSlider />
+      <Testimonials />
+      <Footer />
     </div>
   );
 };

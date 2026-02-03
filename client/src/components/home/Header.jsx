@@ -54,16 +54,28 @@
 
 // Describe: Import React so JSX compiles correctly in this module.
 import React from "react";
+import { useNavigate } from "react-router-dom";
+import { useImageContext } from "../../context/ImageContext";
 
 // Describe: Import local app assets (logo/images/icons) from your assets module.
 import { assets } from "../../assets/assets";
 
 // Describe: Define the Header functional component for the Home page hero section.
 const Header = () => {
+  const navigate = useNavigate();
+  const { setImageFromFile } = useImageContext();
+
+  const handleFileChange = (event) => {
+    const file = event.target.files?.[0];
+    if (!file) return;
+    setImageFromFile(file);
+    navigate("/result");
+  };
+
   // Describe: Return JSX for the header layout.
   return (
     // Describe: Wrap the hero content in a responsive grid container centered with `mx-auto`.
-    <div className="grid w-full max-w-screen-xl mx-auto px-4 sm:px-6 lg:px-8 mt-10 sm:mt-20 mb-24 lg:mb-48 grid-cols-1 md:grid-cols-2 items-center gap-x-10 gap-y-10 md:gap-y-0">
+    <div className="grid w-full max-w-screen-xl mx-auto px-4 sm:px-6 lg:px-8 mt-8 sm:mt-16 lg:mt-20 mb-16 sm:mb-24 lg:mb-28 grid-cols-1 md:grid-cols-2 items-center gap-x-10 gap-y-10 md:gap-y-0">
       {/* Describe: Mark the start of the left-side content column (text + CTA). */}
       {/* Left Side */}
 
@@ -71,12 +83,12 @@ const Header = () => {
       {/* GreatStack considered responsiveness from Day 1. It's worth noting that. No mobile or desktop first, both. Jonas tau ght me desktop-first, and I prefered that. With these modern solutions, we do both together haha. */}
 
       {/* Describe: Create a left column container with responsive ordering and alignment. */}
-      <div className="max-w-lg order-2 md:order-1 justify-self-center md:justify-self-start text-center md:text-start">
+      <div className="max-w-xl order-2 md:order-1 justify-self-center md:justify-self-start text-center md:text-start">
         {/* Describe: Explain the gradient background utility used for the highlighted word. */}
         {/* bg-gradient-to-r: background gradient that flows horizontally from left to right */}
 
         {/* Describe: Render the main hero headline with responsive font sizes and tight line-height. */}
-        <h1 className="text-2xl sm:text-3xl md:text-4xl xl:text-5xl 2xl:text-6xl font-bold text-neutral-700 leading-tight">
+        <h1 className="text-2xl sm:text-3xl md:text-[34px] lg:text-[38px] xl:text-[42px] 2xl:text-[46px] font-semibold text-neutral-700 leading-tight">
           {/* Describe: Render the first part of the headline text (kept exactly as you wrote it). */}
           Remove the
           {/* Describe: Highlight the word “background” using a gradient clipped to the text. */}
@@ -89,7 +101,7 @@ const Header = () => {
         </h1>
 
         {/* Describe: Render the supporting paragraph text below the headline. */}
-        <p className="text-md md:text-lg my-6 text-gray-500">
+        <p className="text-sm sm:text-base md:text-base my-5 sm:my-6 text-gray-500 max-w-md mx-auto md:mx-0">
           {/* Describe: Keep your existing placeholder copy split across lines for readability. */}
           Lorem Ipsum is simply dummy text of the printing and typesetting
           industry. Lorem Ipsum has been the industry's standard dummy text
@@ -102,7 +114,13 @@ const Header = () => {
           {/* I was surprised here because I thought there'd be a button with some extra JS to make it work, but it's the good-old <input> HTML tag */}
 
           {/* Describe: Render a hidden file input that will be triggered by the label button below. */}
-          <input type="file" id="image-upload" hidden />
+          <input
+            type="file"
+            id="hero-upload"
+            accept="image/*"
+            hidden
+            onChange={handleFileChange}
+          />
 
           {/* Describe: Preserve your existing note about hiding the input’s default UI. */}
           {/* We hid the above input because otherwise it'd show "Choose File No file chosen" to the user. This is from React. */}
@@ -113,9 +131,9 @@ const Header = () => {
           {/* Describe: Use a label as the visible button, linked to the hidden input via htmlFor. */}
           <label
             //  Describe: Style the label like a button with gradient background, rounding, and hover animation. */
-            className="inline-flex gap-3 px-8 py-3.5 rounded-full bg-gradient-to-r from-violet-600 to-fuchsia-500 hover:scale-105 transition-all duration-700"
+            className="inline-flex items-center gap-3 px-6 sm:px-7 py-2.5 sm:py-3 rounded-full bg-gradient-to-r from-violet-600 to-fuchsia-500 hover:scale-105 transition-all duration-700 shadow-[0_10px_20px_rgba(124,72,254,0.25)]"
             /* Describe: Connect this label to the hidden input so clicking it opens the file picker. */
-            htmlFor="image-upload"
+            htmlFor="hero-upload"
           >
             {/* Describe: Show the upload icon at a responsive size. */}
             <img
@@ -128,7 +146,7 @@ const Header = () => {
             />
 
             {/* Describe: Render the upload button label text. */}
-            <p className="text-white text-xs md:text-sm">Upload your image</p>
+            <p className="text-white text-xs sm:text-sm">Upload your image</p>
           </label>
         </div>
       </div>
@@ -137,7 +155,7 @@ const Header = () => {
       {/* Right Side */}
 
       {/* Describe: Create a right column container with responsive ordering and alignment. */}
-      <div className="w-full max-w-md justify-self-center md:justify-self-end order-1 md:order-2">
+      <div className="w-full max-w-md lg:max-w-lg justify-self-center md:justify-self-end order-1 md:order-2">
         {/* Describe: Render the hero image from your assets module. */}
         <img src={assets.header_img} alt="Header Image" />
       </div>
