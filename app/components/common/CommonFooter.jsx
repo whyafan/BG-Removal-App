@@ -1,25 +1,27 @@
+"use client";
+
 import React from "react";
-import { useNavigate } from "react-router-dom";
+import { useRouter } from "next/navigation";
 import { useImageContext } from "../../context/ImageContext";
 import { assets } from "../../assets/assets";
-import { useUser } from "@clerk/clerk-react";
+import { useUser } from "@clerk/nextjs";
 import { useCredits } from "../../context/CreditsContext";
 
 const CommonFooter = () => {
-  const navigate = useNavigate();
+  const router = useRouter();
   const { setImageFromFile } = useImageContext();
-  const { user, isSignedIn } = useUser();
+  const { isSignedIn } = useUser();
   const { credits } = useCredits();
 
   const handleFileChange = (event) => {
     const file = event.target.files?.[0];
     if (!file) return;
     if (isSignedIn && credits <= 0) {
-      navigate("/buy");
+      router.push("/buy");
       return;
     }
     setImageFromFile(file);
-    navigate("/result");
+    router.push("/result");
   };
 
   return (

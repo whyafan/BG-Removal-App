@@ -52,19 +52,16 @@
 // Describe: This file defines a responsive navigation bar component with a collapsible mobile menu.
 
 // Import: Bring React into scope so JSX can compile correctly.
+"use client";
+
 import React, { useState } from "react";
 
 // Import: Pull in your static assets (logo + arrow icon) from your local assets module.
 import { assets } from "../../assets/assets";
 
-// Import: Use Link from react-router-dom for client-side navigation (no full page reload).
-import { Link } from "react-router-dom";
-import {
-  SignedIn,
-  SignedOut,
-  SignInButton,
-  UserButton,
-} from "@clerk/clerk-react";
+// Import: Use Link from next/link for client-side navigation.
+import Link from "next/link";
+import { SignedIn, SignedOut, SignInButton, UserButton } from "@clerk/nextjs";
 
 // Define: Create the NavBar functional component that renders the site navigation.
 const NavBar = () => {
@@ -82,7 +79,7 @@ const NavBar = () => {
       {/* Layout: Create a top row with logo on the left and controls/nav on the right. */}
       <div className="flex items-center justify-between">
         {/* Action: Make the logo clickable and route to the home page. */}
-        <Link to="/" onClick={closeMenu}>
+        <Link href="/" onClick={closeMenu}>
           {/* Media: Render the brand logo image at responsive widths. */}
           <img
             className="w-32 sm:w-44"
@@ -144,13 +141,13 @@ const NavBar = () => {
         {/* Desktop: Render the full nav inline only on md+ screens. */}
         <nav className="hidden md:flex items-center gap-6 text-slate-500">
           {/* Link: Navigate to the home route; hover color increases contrast. */}
-          <Link to="/" className="hover:text-slate-800">
+          <Link href="/" className="hover:text-slate-800">
             {/* Text: Label for the Home link. */}
             Home
           </Link>
 
           {/* Link: Navigate to the buy credits route; hover color increases contrast. */}
-          <Link to="/buy" className="hover:text-slate-800">
+          <Link href="/buy" className="hover:text-slate-800">
             {/* Text: Label for the Buy Credit link. */}
             Buy Credit
           </Link>
@@ -190,7 +187,7 @@ const NavBar = () => {
         <nav className="flex flex-col gap-3 text-slate-500">
           {/* Link: Mobile Home link closes the menu after navigation for better UX. */}
           <Link
-            to="/"
+            href="/"
             onClick={closeMenu}
             className="rounded-lg px-3 py-2 hover:bg-slate-100"
           >
@@ -200,7 +197,7 @@ const NavBar = () => {
 
           {/* Link: Mobile Buy Credit link closes the menu after navigation for better UX. */}
           <Link
-            to="/buy"
+            href="/buy"
             onClick={closeMenu}
             className="rounded-lg px-3 py-2 hover:bg-slate-100"
           >

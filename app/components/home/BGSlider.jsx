@@ -1,7 +1,7 @@
+"use client";
+
 import React, { useState } from "react";
 import { assets } from "../../assets/assets";
-
-import "../../index.css";
 
 const BGSlider = () => {
   const [sliderPos, setSliderPos] = useState(50);

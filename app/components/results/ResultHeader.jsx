@@ -1,6 +1,8 @@
+"use client";
+
 import React from "react";
 import { assets } from "../../assets/assets";
-import { SignedIn, SignedOut, SignInButton, UserButton, useUser } from "@clerk/clerk-react";
+import { SignedIn, SignedOut, SignInButton, UserButton, useUser } from "@clerk/nextjs";
 import { useCredits } from "../../context/CreditsContext";
 
 const ResultHeader = () => {

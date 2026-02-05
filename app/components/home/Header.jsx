@@ -53,10 +53,12 @@
 // ============================================================================
 
 // Describe: Import React so JSX compiles correctly in this module.
+"use client";
+
 import React from "react";
-import { useNavigate } from "react-router-dom";
+import { useRouter } from "next/navigation";
 import { useImageContext } from "../../context/ImageContext";
-import { useUser } from "@clerk/clerk-react";
+import { useUser } from "@clerk/nextjs";
 import { useCredits } from "../../context/CreditsContext";
 
 // Describe: Import local app assets (logo/images/icons) from your assets module.
@@ -64,20 +66,20 @@ import { assets } from "../../assets/assets";
 
 // Describe: Define the Header functional component for the Home page hero section.
 const Header = () => {
-  const navigate = useNavigate();
+  const router = useRouter();
   const { setImageFromFile } = useImageContext();
-  const { user, isSignedIn } = useUser();
+  const { isSignedIn } = useUser();
   const { credits } = useCredits();
 
   const handleFileChange = (event) => {
     const file = event.target.files?.[0];
     if (!file) return;
     if (isSignedIn && credits <= 0) {
-      navigate("/buy");
+      router.push("/buy");
       return;
     }
     setImageFromFile(file);
-    navigate("/result");
+    router.push("/result");
   };
 
   // Describe: Return JSX for the header layout.

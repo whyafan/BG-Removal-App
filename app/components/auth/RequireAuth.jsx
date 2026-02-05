@@ -1,15 +1,17 @@
+"use client";
+
 import React from "react";
-import { SignedIn, SignedOut, RedirectToSignIn } from "@clerk/clerk-react";
-import { useLocation } from "react-router-dom";
+import { SignedIn, SignedOut, RedirectToSignIn } from "@clerk/nextjs";
+import { usePathname } from "next/navigation";
 
 const RequireAuth = ({ children }) => {
-  const location = useLocation();
+  const pathname = usePathname();
 
   return (
     <>
       <SignedIn>{children}</SignedIn>
       <SignedOut>
-        <RedirectToSignIn redirectUrl={location.pathname} />
+        <RedirectToSignIn redirectUrl={pathname} />
       </SignedOut>
     </>
   );
