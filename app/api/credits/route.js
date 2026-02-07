@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
-import { clerkClient, requireAuth } from "../_auth.js";
+import { supabaseAdmin } from "../../lib/supabase/admin";
+import { getUserIdFromRequest } from "../supabase-auth";
 
 const getCreditsFromUser = (user) => {
   const credits = user?.privateMetadata?.credits;
@@ -7,17 +8,23 @@ const getCreditsFromUser = (user) => {
 };
 
 export async function GET(req) {
-  const { userId, response } = await requireAuth(req);
-  if (!userId) return response ?? NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+  const userId = await getUserIdFromRequest(req);
+  if (!userId) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
 
-  const user = await clerkClient.users.getUser(userId);
-  let credits = getCreditsFromUser(user);
+  const { data, error } = await supabaseAdmin
+    .from("profiles")
+    .select("credits")
+    .eq("id", userId)
+    .single();
 
-  if (credits === null) {
+  if (error && error.code !== "PGRST116") {
+    return NextResponse.json({ error: "Database error" }, { status: 500 });
+  }
+
+  let credits = data?.credits;
+  if (credits === null || credits === undefined) {
     credits = 5;
-    await clerkClient.users.updateUserMetadata(userId, {
-      privateMetadata: { ...user.privateMetadata, credits },
-    });
+    await supabaseAdmin.from("profiles").upsert({ id: userId, credits });
   }
 
   return NextResponse.json({ credits });

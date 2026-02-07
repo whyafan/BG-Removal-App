@@ -1,14 +1,17 @@
 import { NextResponse } from "next/server";
-import { clerkClient, requireAuth } from "../_auth.js";
+import { supabaseAdmin } from "../../lib/supabase/admin";
+import { getUserIdFromRequest } from "../supabase-auth";
 
 export async function GET(req) {
-  const { userId, response } = await requireAuth(req);
-  if (!userId) return response ?? NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+  const userId = await getUserIdFromRequest(req);
+  if (!userId) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
 
-  const user = await clerkClient.users.getUser(userId);
-  const history = Array.isArray(user.privateMetadata?.history)
-    ? user.privateMetadata.history
-    : [];
+  const { data } = await supabaseAdmin
+    .from("conversion_history")
+    .select("*")
+    .eq("user_id", userId)
+    .order("created_at", { ascending: false })
+    .limit(50);
 
-  return NextResponse.json({ history });
+  return NextResponse.json({ history: data ?? [] });
 }

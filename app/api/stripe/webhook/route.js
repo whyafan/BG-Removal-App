@@ -1,6 +1,6 @@
 import Stripe from "stripe";
 import { NextResponse } from "next/server";
-import { clerkClient } from "../../_auth.js";
+import { supabaseAdmin } from "../../../lib/supabase/admin";
 
 const STRIPE_SECRET_KEY = process.env.STRIPE_SECRET_KEY;
 const WEBHOOK_SECRET = process.env.STRIPE_WEBHOOK_SECRET;
@@ -32,16 +32,16 @@ export async function POST(req) {
     const creditsToAdd = Number(session?.metadata?.credits || 0);
 
     if (userId && creditsToAdd > 0) {
-      const user = await clerkClient.users.getUser(userId);
-      const existingCredits = Number(user?.privateMetadata?.credits || 0);
+      const { data } = await supabaseAdmin
+        .from("profiles")
+        .select("credits")
+        .eq("id", userId)
+        .single();
+
+      const existingCredits = Number(data?.credits || 0);
       const nextCredits = existingCredits + creditsToAdd;
 
-      await clerkClient.users.updateUserMetadata(userId, {
-        privateMetadata: {
-          ...user.privateMetadata,
-          credits: nextCredits,
-        },
-      });
+      await supabaseAdmin.from("profiles").upsert({ id: userId, credits: nextCredits });
     }
   }
 

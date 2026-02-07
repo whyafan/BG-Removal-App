@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
-import { clerkClient, requireAuth } from "../../_auth.js";
+import { supabaseAdmin } from "../../../lib/supabase/admin";
+import { getUserIdFromRequest } from "../../supabase-auth";
 
 const getCreditsFromUser = (user) => {
   const credits = user?.privateMetadata?.credits;
@@ -7,34 +8,32 @@ const getCreditsFromUser = (user) => {
 };
 
 export async function POST(req) {
-  const { userId, response } = await requireAuth(req);
-  if (!userId) return response ?? NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+  const userId = await getUserIdFromRequest(req);
+  if (!userId) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
 
-  const user = await clerkClient.users.getUser(userId);
-  const credits = getCreditsFromUser(user) ?? 0;
+  const { data, error } = await supabaseAdmin
+    .from("profiles")
+    .select("credits")
+    .eq("id", userId)
+    .single();
 
+  if (error && error.code !== "PGRST116") {
+    return NextResponse.json({ error: "Database error" }, { status: 500 });
+  }
+
+  const credits = data?.credits ?? 0;
   if (credits <= 0) {
     return NextResponse.json({ error: "No credits left", credits: 0 }, { status: 402 });
   }
 
   const body = await req.json().catch(() => ({}));
   const nextCredits = Math.max(credits - 1, 0);
-  const nextHistory = Array.isArray(user.privateMetadata?.history)
-    ? user.privateMetadata.history.slice(-49)
-    : [];
 
-  nextHistory.push({
-    type: "remove_bg",
-    at: new Date().toISOString(),
-    fileName: body?.fileName || null,
-  });
+  await supabaseAdmin.from("profiles").upsert({ id: userId, credits: nextCredits });
 
-  await clerkClient.users.updateUserMetadata(userId, {
-    privateMetadata: {
-      ...user.privateMetadata,
-      credits: nextCredits,
-      history: nextHistory,
-    },
+  await supabaseAdmin.from("conversion_history").insert({
+    user_id: userId,
+    file_name: body?.fileName || null,
   });
 
   return NextResponse.json({ credits: nextCredits });

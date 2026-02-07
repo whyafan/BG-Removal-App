@@ -4,24 +4,76 @@ import React from "react";
 import { useRouter } from "next/navigation";
 import { useImageContext } from "../../context/ImageContext";
 import { assets } from "../../assets/assets";
-import { useUser } from "@clerk/nextjs";
 import { useCredits } from "../../context/CreditsContext";
+import { useAuthContext } from "../../context/AuthContext";
+import { toast } from "sonner";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from "../ui/alert-dialog";
 
 const CommonFooter = () => {
   const router = useRouter();
   const { setImageFromFile } = useImageContext();
-  const { isSignedIn } = useUser();
+  const { user, getAccessToken } = useAuthContext();
   const { credits } = useCredits();
+  const [requestOpen, setRequestOpen] = React.useState(false);
+  const [requesting, setRequesting] = React.useState(false);
 
   const handleFileChange = (event) => {
     const file = event.target.files?.[0];
     if (!file) return;
-    if (isSignedIn && credits <= 0) {
+    if (user && credits <= 0) {
       router.push("/buy");
       return;
     }
     setImageFromFile(file);
     router.push("/result");
+  };
+
+  const handleRequestAccess = async () => {
+    if (!user) {
+      router.push("/login?redirect=/");
+      return;
+    }
+    const token = await getAccessToken?.();
+    if (!token) {
+      toast.error("Please sign in to request access.");
+      return;
+    }
+
+    setRequesting(true);
+    try {
+      const response = await fetch("/api/access/request", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+      });
+      const data = await response.json();
+      if (!response.ok) throw new Error(data?.error || "Request failed");
+
+      toast.success("API access request submitted.", {
+        description: data?.confirmationCode
+          ? `Confirmation code: ${data.confirmationCode}`
+          : "We will get back to you shortly.",
+      });
+      setRequestOpen(false);
+    } catch (err) {
+      toast.error("Unable to submit request.", {
+        description: err?.message || "Please try again.",
+      });
+    } finally {
+      setRequesting(false);
+    }
   };
 
   return (
@@ -63,6 +115,39 @@ const CommonFooter = () => {
           </div>
 
           <div className="flex items-center gap-3 justify-center">
+            <AlertDialog
+              open={requestOpen}
+              onOpenChange={(nextOpen) => {
+                if (!user && nextOpen) {
+                  router.push("/login?redirect=/");
+                  return;
+                }
+                setRequestOpen(nextOpen);
+              }}
+            >
+              <AlertDialogTrigger asChild>
+                <button
+                  type="button"
+                  className="text-xs sm:text-sm text-[#4B4B4B] underline"
+                >
+                  Request API Access
+                </button>
+              </AlertDialogTrigger>
+              <AlertDialogContent>
+                <AlertDialogHeader>
+                  <AlertDialogTitle>Request API access?</AlertDialogTitle>
+                  <AlertDialogDescription>
+                    We will review your request and email you a token if approved.
+                  </AlertDialogDescription>
+                </AlertDialogHeader>
+                <AlertDialogFooter>
+                  <AlertDialogCancel disabled={requesting}>Cancel</AlertDialogCancel>
+                  <AlertDialogAction onClick={handleRequestAccess} disabled={requesting}>
+                    {requesting ? "Submitting..." : "Confirm"}
+                  </AlertDialogAction>
+                </AlertDialogFooter>
+              </AlertDialogContent>
+            </AlertDialog>
             <button className="h-9 w-9 rounded-full border border-[#E6E6E6] bg-white shadow-[0_4px_10px_rgba(0,0,0,0.06)]">
               <img
                 src={assets.facebook_icon}

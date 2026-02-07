@@ -58,8 +58,8 @@
 import React from "react";
 import { useRouter } from "next/navigation";
 import { useImageContext } from "../../context/ImageContext";
-import { useUser } from "@clerk/nextjs";
 import { useCredits } from "../../context/CreditsContext";
+import { useAuthContext } from "../../context/AuthContext";
 
 // Describe: Import local app assets (logo/images/icons) from your assets module.
 import { assets } from "../../assets/assets";
@@ -68,13 +68,13 @@ import { assets } from "../../assets/assets";
 const Header = () => {
   const router = useRouter();
   const { setImageFromFile } = useImageContext();
-  const { isSignedIn } = useUser();
+  const { user } = useAuthContext();
   const { credits } = useCredits();
 
   const handleFileChange = (event) => {
     const file = event.target.files?.[0];
     if (!file) return;
-    if (isSignedIn && credits <= 0) {
+    if (user && credits <= 0) {
       router.push("/buy");
       return;
     }

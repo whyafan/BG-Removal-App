@@ -9,9 +9,9 @@
 // - JSX overview (why `return ( ... )` can contain HTML-like syntax):
 //   https://react.dev/learn/writing-markup-with-jsx
 //
-// Routing (react-router-dom)
-// - <Link> component (client-side navigation without full reload):
-//   https://reactrouter.com/en/main/components/link
+// Routing (next/link)
+// - <Link> component (client-side navigation):
+//   https://nextjs.org/docs/app/building-your-application/routing/linking-and-navigating
 //
 // Tailwind CSS utilities (styling + responsive behavior)
 // - Responsive design prefixes like `md:hidden` / `md:flex`:
@@ -61,13 +61,14 @@ import { assets } from "../../assets/assets";
 
 // Import: Use Link from next/link for client-side navigation.
 import Link from "next/link";
-import { SignedIn, SignedOut, SignInButton, UserButton } from "@clerk/nextjs";
+import { useAuthContext } from "../../context/AuthContext";
 
 // Define: Create the NavBar functional component that renders the site navigation.
 const NavBar = () => {
   // State: Track whether the mobile menu is open (true) or hidden (false).
   // Resource: https://react.dev/reference/react/useState
   const [isOpen, setIsOpen] = useState(false);
+  const { user, logout } = useAuthContext();
 
   // Helper: Provide a single function to close the mobile menu after clicking a link.
   const closeMenu = () => setIsOpen(false);
@@ -90,9 +91,14 @@ const NavBar = () => {
 
         {/* Control: Show a hamburger toggle button only on mobile screens. */}
         <div className="flex items-center gap-2 md:hidden">
-          <SignedIn>
-            <UserButton afterSignOutUrl="/" />
-          </SignedIn>
+          {user ? (
+            <button
+              onClick={logout}
+              className="text-[11px] rounded-full border border-slate-200 px-2 py-1 text-slate-600"
+            >
+              Sign out
+            </button>
+          ) : null}
           <button
             // Type: Ensure this button doesn’t submit a form if NavBar is ever inside one.
             type="button"
@@ -153,24 +159,22 @@ const NavBar = () => {
           </Link>
 
           {/* CTA: Primary call-to-action button displayed on desktop. */}
-          <SignedOut>
-            <SignInButton mode="modal">
-              <button className="flex items-center cursor-pointer gap-4 px-4 py-2 bg-[#313131] text-white rounded-full sm:px-8 text-[12px] lg:text-sm">
-                {/* Text: CTA label. */}
-                Get Started
-                {/* Media: Show the arrow icon to the right of the CTA label. */}
-                <img
-                  className="w-3 md:w-4"
-                  src={assets.arrow_icon}
-                  alt="Arrow Icon"
-                />
-              </button>
-            </SignInButton>
-          </SignedOut>
-
-          <SignedIn>
-            <UserButton afterSignOutUrl="/" />
-          </SignedIn>
+          {!user ? (
+            <Link
+              href="/login"
+              className="flex items-center cursor-pointer gap-4 px-4 py-2 bg-[#313131] text-white rounded-full sm:px-8 text-[12px] lg:text-sm"
+            >
+              Get Started
+              <img className="w-3 md:w-4" src={assets.arrow_icon} alt="Arrow Icon" />
+            </Link>
+          ) : (
+            <button
+              onClick={logout}
+              className="text-[12px] rounded-full border border-slate-200 px-3 py-2 text-slate-600"
+            >
+              Sign out
+            </button>
+          )}
         </nav>
       </div>
 
@@ -206,27 +210,23 @@ const NavBar = () => {
           </Link>
 
           {/* CTA: Mobile call-to-action button; full width to match mobile tap targets. */}
-          <SignedOut>
-            <SignInButton mode="modal">
-              <button
-                // Interaction: Close menu on click (you can also navigate here if you attach routing later).
-                onClick={closeMenu}
-                // Styles: w-full makes it full width; justify-center centers content; rounded-full matches desktop style.
-                className="mt-1 cursor-pointer flex w-full items-center justify-center gap-3 px-4 py-2 bg-[#313131] text-white rounded-full text-[12px]"
-              >
-                {/* Text: CTA label on mobile. */}
-                Get Started
-                {/* Media: Arrow icon on mobile CTA. */}
-                <img className="w-3" src={assets.arrow_icon} alt="Arrow Icon" />
-              </button>
-            </SignInButton>
-          </SignedOut>
-
-          <SignedIn>
-            <div className="flex justify-center">
-              <UserButton afterSignOutUrl="/" />
-            </div>
-          </SignedIn>
+          {!user ? (
+            <Link
+              href="/login"
+              onClick={closeMenu}
+              className="mt-1 cursor-pointer flex w-full items-center justify-center gap-3 px-4 py-2 bg-[#313131] text-white rounded-full text-[12px]"
+            >
+              Get Started
+              <img className="w-3" src={assets.arrow_icon} alt="Arrow Icon" />
+            </Link>
+          ) : (
+            <button
+              onClick={logout}
+              className="mt-1 w-full rounded-full border border-slate-200 px-4 py-2 text-[12px] text-slate-600"
+            >
+              Sign out
+            </button>
+          )}
         </nav>
       </div>
     </header>

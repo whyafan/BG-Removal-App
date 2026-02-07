@@ -5,12 +5,12 @@ import ResultHeader from "../components/results/ResultHeader";
 import CommonFooter from "../components/common/CommonFooter";
 import { assets, plans } from "../assets/assets";
 import RequireAuth from "../components/auth/RequireAuth";
-import { useAuth } from "@clerk/nextjs";
 import { toast } from "sonner";
 import { useSearchParams } from "next/navigation";
+import { useAuthContext } from "../context/AuthContext";
 
 const BuyCredit = () => {
-  const { getToken } = useAuth();
+  const { getAccessToken } = useAuthContext();
   const searchParams = useSearchParams();
   const isSuccess = searchParams.get("success") === "true";
   const isCanceled = searchParams.get("canceled") === "true";
@@ -40,7 +40,11 @@ const BuyCredit = () => {
     }
 
     try {
-      const token = await getToken();
+      const token = await getAccessToken?.();
+      if (!token) {
+        toast.error("Please sign in to continue.");
+        return;
+      }
       const response = await fetch("/api/stripe/checkout", {
         method: "POST",
         headers: {

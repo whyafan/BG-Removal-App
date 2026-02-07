@@ -2,14 +2,17 @@
 
 import React from "react";
 import { assets } from "../../assets/assets";
-import { SignedIn, SignedOut, SignInButton, UserButton, useUser } from "@clerk/nextjs";
+import { useAuthContext } from "../../context/AuthContext";
 import { useCredits } from "../../context/CreditsContext";
 
 const ResultHeader = () => {
-  const { user } = useUser();
+  const { user, logout } = useAuthContext();
   const { credits } = useCredits();
   const displayName =
-    user?.firstName || user?.username || user?.primaryEmailAddress?.emailAddress;
+    user?.given_name ||
+    user?.name ||
+    user?.email ||
+    "there";
 
   return (
     <header className="w-full">
@@ -31,20 +34,19 @@ const ResultHeader = () => {
               Credits left: {credits}
             </div>
 
-            <SignedOut>
-              <SignInButton mode="modal">
-                <button className="rounded-full border border-[#E6E6E6] px-4 py-1.5 text-xs sm:text-sm text-[#4B5563] hover:bg-white">
-                  Sign in
-                </button>
-              </SignInButton>
-            </SignedOut>
-
-            <SignedIn>
+            {user ? (
               <div className="flex items-center gap-2 text-xs sm:text-sm text-[#4B5563]">
-                Hi! {displayName || "there"}
-                <UserButton afterSignOutUrl="/" />
+                Hi! {displayName}
+                <button
+                  onClick={logout}
+                  className="rounded-full border border-[#E6E6E6] px-3 py-1 text-[11px] hover:bg-white"
+                >
+                  Sign out
+                </button>
               </div>
-            </SignedIn>
+            ) : (
+              <span className="text-xs sm:text-sm text-[#4B5563]">Not signed in</span>
+            )}
           </div>
         </div>
       </div>
